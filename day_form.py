@@ -4,7 +4,7 @@ from Tkinter import *
 from day_data import *
 from ScrolledText import ScrolledText
 
-def save_changes(chore_list, day):
+def save_changes(day):
     # TODO function not implimented yet...
 
     # Clear all chores
@@ -12,8 +12,8 @@ def save_changes(chore_list, day):
 
     # Repopulate day's list with items from text fields
 
-
 def clear_text(chore_frame):
+    # TODO remove this silly iteration and create a composite widget for chores
     # Find textbox in chore_frame and set text to ""
     # Iterate through children of children to find the darn Text widget
     for i in chore_frame.winfo_children():  
@@ -69,12 +69,13 @@ def messageWindow(parent, day):
     ff = Frame(main_frame)
     Button(ff, text = "Add Item",
            command = lambda:
-               add_chore(chores_frames_frame, 
-                         day)).pack(side = TOP)
-    Button(ff, text = "Finish").pack(side = LEFT)
+               add_chore(chores_frames_frame, day)).pack(side = TOP)
+    Button(ff, text = "Finish",
+           command = lambda: 
+               message_window.destroy()).pack(side = LEFT)
     Button(ff, text = "Cancel",
            command = lambda: 
-           message_window.destroy()).pack(side = RIGHT)
+               message_window.destroy()).pack(side = RIGHT)
     ff.pack()
     x = parent.winfo_x() + 32
     y = parent.winfo_y() + 32
