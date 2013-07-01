@@ -3,6 +3,7 @@
 from Tkinter import *
 from day_data import *
 from ScrolledText import ScrolledText
+from chore import *
 
 def save_changes(day):
     # TODO function not implimented yet...
@@ -23,37 +24,20 @@ def clear_text(chore_frame):
                     j.delete("1.0", END)
                     return 
 
-def populate_chores(contain_frame, day, iterator): 
-    # Uses an external iterator to fill out the GUI
-    # At some point this should be merged with add_chore() below
-    f = Frame(contain_frame, borderwidth = 1, relief = RAISED)
-    b =  Checkbutton(f, text = "Done")
+
+def add_chore(chore_list, contain_frame, day):
+    chore_list.append(Chore(contain_frame, day))
+
+def populate_chores(chore_list, contain_frame, day, iterator): 
+    add_chore(chore_list, contain_frame, day)
     if(day.get_index(iterator)[0]):
-        b.select()
-    b.pack(side = LEFT)
-    e = ScrolledText(f, width = 40, height = 3)
-    e.insert("1.0", day.get_index(iterator)[1])
-    e.pack(side = LEFT)
-    Button(f, text = "Delete", command = 
-           lambda: f.destroy()).pack(side = TOP)
-    Button(f, text = "Clear", command =
-           lambda: clear_text(f)).pack(side = BOTTOM)
-    f.pack()
+        chore_list[-1].check.select()
 
-def add_chore(contain_frame, day):
-    f = Frame(contain_frame, borderwidth = 1, relief = RAISED)
-    b =  Checkbutton(f, text = "Done")
-    b.pack(side = LEFT)
-    e = ScrolledText(f, width = 40, height = 3)
-    e.pack(side = LEFT)
-    Button(f, text = "Delete", command = 
-           lambda: f.destroy()).pack(side = TOP)
-    Button(f, text = "Clear", command =
-           lambda: clear_text(f)).pack(side = BOTTOM)
-    f.pack()
-
-
+    
 def messageWindow(parent, day):
+    # define list to hold chores
+    my_chores = []
+
     # Create child window
     message_window = Toplevel()
     message_window.title(day.month + "/" + day.day + "/" + day.year + "  M/D/Y")
@@ -62,14 +46,14 @@ def messageWindow(parent, day):
     chores_frames_frame = Frame(main_frame)
 
     for i in range(num_lines):
-        populate_chores(chores_frames_frame, day, i)
+        populate_chores(my_chores, chores_frames_frame, day, i)
     
     chores_frames_frame.pack()
     main_frame.pack()
     ff = Frame(main_frame)
     Button(ff, text = "Add Item",
            command = lambda:
-               add_chore(chores_frames_frame, day)).pack(side = TOP)
+               add_chore(my_chores, chores_frames_frame, day)).pack(side = TOP)
     Button(ff, text = "Finish",
            command = lambda: 
                message_window.destroy()).pack(side = LEFT)

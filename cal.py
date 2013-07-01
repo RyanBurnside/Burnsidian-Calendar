@@ -52,7 +52,7 @@ def make_cal (month, year):
 
         # Fill grid with buttons
         d = Tkinter.Button(root, text = '%s\n'%(r + 1),
-                           borderwidth = 1, width = 6, height = 2, 
+                           borderwidth = 1, width = 9, height = 2, 
                            activebackground = select_color, 
                            command = lambda r=r: 
                            messageWindow(root, cur_days[r]), 
