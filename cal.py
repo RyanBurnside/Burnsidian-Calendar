@@ -54,7 +54,8 @@ def make_cal (month, year):
         d = Tkinter.Button(root, text = '%s\n'%(r + 1),
                            borderwidth = 1, width = 6, height = 2, 
                            activebackground = select_color, 
-                           command = lambda:messageWindow(root, cur_days[r]), 
+                           command = lambda r=r: 
+                           messageWindow(root, cur_days[r]), 
                            bg = "#ffffff")
 
         if(int(today.strftime("%d")) == r + 1):
@@ -71,6 +72,8 @@ def make_cal (month, year):
                                                           columnspan = 6)
 
 #--------TEST DATUM--------
+aa = Day_Data("29", "06", "2013", "Dates")
+aa.save_data()
 
 #--------MAIN LOOP BEGIN--------
 root = Tkinter.Tk()

@@ -13,8 +13,8 @@ class Day_Data(object):
         self.day = day
         self.month = month
         self.year = year
-        # fname needs to be ddmmyyyy
-        self.fname = os.path.join(save_dir, day + month + year)
+        # fname needs to be yyyymmdd
+        self.fname = os.path.join(save_dir, year + month + day)
         self.load_data() # Tries to load self on instanciation
 
     def add_chore(self, bool_done, desc):
@@ -22,6 +22,9 @@ class Day_Data(object):
             
     def delete_chore(self, index):
         del self.chores[index]
+
+    def delete_chores(self):
+        del self.chores[:]
 
     def get_index(self, index):
         return self.chores[index]
@@ -38,9 +41,8 @@ class Day_Data(object):
                     done = bool(text_file.readline().strip())
                     chore = text_file.readline().strip()
                     self.add_chore(done, chore)
-
         except IOError:
-            print self.fname + " Does not exist, creating new instance..."
+            return
     
     def save_data(self):
         if len(self.chores): # If the object contains nothing, don't write
@@ -49,3 +51,4 @@ class Day_Data(object):
                 for i in self.chores:
                     print >> text_file, i[0]
                     print >> text_file, i[1]
+  
