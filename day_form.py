@@ -5,8 +5,7 @@ from day_data import *
 from ScrolledText import ScrolledText
 from chore import *
 
-def save_changes(day):
-    # TODO function not implimented yet...
+def save_changes(chore_container, day):
     # TODO consider replacing return carages with \\r so when they are written
     # They will be a single line yet when they are read they will become \r
 
@@ -14,7 +13,11 @@ def save_changes(day):
     day.delete_chores();
 
     # Repopulate day's list with items from text fields
-
+    # TODO find odd newline character that is being added upon saving
+    # TODO save booleans back to True and False strings instead of 0 and 1
+    for i in chore_container:
+        day.add_chore(i.check_state.get(), i.textb.get("1.0", END))
+    day.save_data()
 
 def add_chore(chore_list, contain_frame, day, iterator = None):
     # Adds a new Chore instance to chore_list, new if no iterator is defined
@@ -49,7 +52,7 @@ def messageWindow(parent, day):
                add_chore(my_chores, chores_frames_frame, day)).pack(side = TOP)
     Button(ff, text = "Finish",
            command = lambda: 
-               message_window.destroy()).pack(side = LEFT)
+               save_changes(my_chores, day)).pack(side = LEFT)
     Button(ff, text = "Cancel",
            command = lambda: 
                message_window.destroy()).pack(side = RIGHT)

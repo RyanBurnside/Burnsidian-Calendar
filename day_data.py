@@ -38,7 +38,12 @@ class Day_Data(object):
                 del self.chores[:] # Clear current list
                 iter = int(text_file.readline())
                 for i in range(iter):
-                    done = bool(text_file.readline().strip())
+                    truth = text_file.readline().strip()
+                    if truth == "True":
+                        done = True
+                    else:
+                        done = False
+
                     chore = text_file.readline().strip()
                     self.add_chore(done, chore)
         except IOError:

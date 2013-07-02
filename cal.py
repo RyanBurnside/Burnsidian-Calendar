@@ -70,10 +70,10 @@ def make_cal (month, year):
     Tkinter.Label(root, text = today.strftime("%x")).grid(row=num_days + 2, 
                                                           column = 0, 
                                                           columnspan = 6)
+    # TODO date picker spinbox here
 
 #--------TEST DATUM--------
 aa = Day_Data("29", "06", "2013", "Dates")
-aa.save_data()
 
 #--------MAIN LOOP BEGIN--------
 root = Tkinter.Tk()
