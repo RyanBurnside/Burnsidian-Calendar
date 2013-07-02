@@ -7,29 +7,22 @@ from chore import *
 
 def save_changes(day):
     # TODO function not implimented yet...
+    # TODO consider replacing return carages with \\r so when they are written
+    # They will be a single line yet when they are read they will become \r
 
     # Clear all chores
     day.delete_chores();
 
     # Repopulate day's list with items from text fields
 
-def clear_text(chore_frame):
-    # TODO remove this silly iteration and create a composite widget for chores
-    # Find textbox in chore_frame and set text to ""
-    # Iterate through children of children to find the darn Text widget
-    for i in chore_frame.winfo_children():  
-        if i.winfo_class() == "Frame":
-            for j in i.winfo_children():
-                if j.winfo_class() == "Text":
-                    j.delete("1.0", END)
-                    return 
 
+def add_chore(chore_list, contain_frame, day, iterator = None):
+    # Adds a new Chore instance to chore_list, new if no iterator is defined
+    chore_list.append(Chore(contain_frame, day, iterator))
 
-def add_chore(chore_list, contain_frame, day):
-    chore_list.append(Chore(contain_frame, day))
-
-def populate_chores(chore_list, contain_frame, day, iterator): 
-    add_chore(chore_list, contain_frame, day)
+def populate_chores(chore_list, contain_frame, day, iterator):
+    # Adds a Chore instance to chore_list
+    add_chore(chore_list, contain_frame, day, iterator)
     if(day.get_index(iterator)[0]):
         chore_list[-1].check.select()
 
