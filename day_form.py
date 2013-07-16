@@ -1,63 +1,62 @@
-# This is a tkinter form to collect day data
-
-from Tkinter import *
-from day_data import *
+import Tkinter
 from ScrolledText import ScrolledText
-from chore import *
+import sys
 
-def save_changes(chore_container, day):
-    # TODO consider replacing return carages with \\r so when they are written
-    # They will be a single line yet when they are read they will become \r
+# This widget looks for date data and loads it upong being called
+# It also saves day data upon user clicking finish
 
-    # Clear all chores
-    day.delete_chores();
+class Day_Form(Tkinter.Frame):
+    def __init__(self, parent, str_day, str_month, str_year, **options):
+        self.my_frame = Tkinter.Frame.__init__(self, parent, **options)
+        self.check_vars = [] # holds (BooleanVar()) 
+        self.widgets = [] # holds (Checkbutton, ScrolledText)
+        self.str_day = str_day
+        self.str_month = str_month
+        self.str_year = str_year
 
-    # Repopulate day's list with items from text fields
-    # TODO find odd newline character that is being added upon saving
-    # TODO save booleans back to True and False strings instead of 0 and 1
-    for i in chore_container:
-        day.add_chore(i.check_state.get(), i.textb.get("1.0", END))
-    day.save_data()
+    def load_day(self, str_day, str_month, str_year):
+        try:
+            str_day = str(str_day)
+            if len(str_day) == 1:
+                str_day = '0' + str_day
 
-def add_chore(chore_list, contain_frame, day, iterator = None):
-    # Adds a new Chore instance to chore_list, new if no iterator is defined
-    chore_list.append(Chore(contain_frame, day, iterator))
+            str_month = str(str_month)
+            if len(str_month) == 1:
+                str_month = '0' + str_month
+ 
+            str_year = str(str_year)
+            if len(str_year) != 4:
+                print "Bad year value!"
 
-def populate_chores(chore_list, contain_frame, day, iterator):
-    # Adds a Chore instance to chore_list
-    add_chore(chore_list, contain_frame, day, iterator)
-    if(day.get_index(iterator)[0]):
-        chore_list[-1].check.select()
+            fname = str_year + str_month + str_day
 
-    
-def messageWindow(parent, day):
-    # define list to hold chores
-    my_chores = []
+            with open(fname, "r") as text_file:
+                num_vals = int(text_file.readline().strip())
+                for i in range(num_vals):
+                    bb = Tkinter.BooleanVar()
+                    self.check_vars.append(bb)
 
-    # Create child window
-    message_window = Toplevel()
-    message_window.title(day.month + "/" + day.day + "/" + day.year + "  M/D/Y")
-    num_lines = day.get_num_chores()
-    main_frame = Frame(message_window, width = 320, height = 240)
-    chores_frames_frame = Frame(main_frame)
+                    # Read value for check widget
+                    truth = text_file.readline().strip()
+                    if truth == "True":
+                        self.check_vars[-1].set(1)
+                    else:
+                        self.check_vars[-1].set(0)
 
-    for i in range(num_lines):
-        populate_chores(my_chores, chores_frames_frame, day, i)
-    
-    chores_frames_frame.pack()
-    main_frame.pack()
-    ff = Frame(main_frame)
-    Button(ff, text = "Add Item",
-           command = lambda:
-               add_chore(my_chores, chores_frames_frame, day)).pack(side = TOP)
-    Button(ff, text = "Finish",
-           command = lambda: 
-               save_changes(my_chores, day)).pack(side = LEFT)
-    Button(ff, text = "Cancel",
-           command = lambda: 
-               message_window.destroy()).pack(side = RIGHT)
-    ff.pack()
-    x = parent.winfo_x() + 32
-    y = parent.winfo_y() + 32
+                    # Read value for ScrollText
+                    chore = text_file.readline().strip()
+                    temp_b = Tkinter.Checkbutton(self, 
+                                         variable=self.check_vars[-1],
+                                         text = "Done",
+                                         onvalue = True, offvalue = False)
+                    temp_t = ScrolledText(self,
+                                          wrap=Tkinter.WORD, width = 40, height = 3,
+                                          selectbackground ="#ff5500")
+                    temp_t.insert("1.0",chore)
+                    self.widgets.append([temp_b, temp_t])
+                    self.widgets[-1][0].grid(row = i, column = 0)
+                    self.widgets[-1][1].grid(row = i,column = 1)
 
-    message_window.geometry("+%d+%d" % (x, y))
+        except Exception, e:
+            exception_name, exception_value = sys.exc_info()[:2]
+            raise

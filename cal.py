@@ -1,8 +1,7 @@
-import day_data
-from day_form import *
 import calendar
 import Tkinter
 import datetime
+from day_form import Day_Form
 
 # Global selection color
 select_color = "#ff5500"
@@ -14,11 +13,6 @@ today = datetime.date.today()
 cur_days = []
 
 def make_cal (month, year):
-    # Clear the old list of days, prepare to fill with new Day_Data objects
-    del cur_days[:]
-
-    # TODO clear all currently existing date buttons (will be container)
-
     # Get number of days to iterate over
     mrange = calendar.monthrange(int(year), int(month))
 
@@ -43,19 +37,13 @@ def make_cal (month, year):
 
     # Populate the grid with day buttons
     for r in range(num_days):
-        # Fill list of Day_Data
-        padded_day = str(r + 1)
-        
-        if (len(padded_day) == 1):
-            padded_day = "0" + padded_day
-        cur_days.append(Day_Data(padded_day, month, year,"Dates"))
 
         # Fill grid with buttons
         d = Tkinter.Button(root, text = '%s\n'%(r + 1),
                            borderwidth = 1, width = 9, height = 2, 
                            activebackground = select_color, 
-                           command = lambda r=r: 
-                           messageWindow(root, cur_days[r]), 
+                           #command = lambda r=r: 
+                           #messageWindow(root, cur_days[r]), 
                            bg = "#ffffff")
 
         if(int(today.strftime("%d")) == r + 1):
@@ -67,17 +55,14 @@ def make_cal (month, year):
             row += 1;
             column = 0;
 
-    Tkinter.Label(root, text = today.strftime("%x")).grid(row=num_days + 2, 
-                                                          column = 0, 
-                                                          columnspan = 6)
-    # TODO date picker spinbox here
-
-#--------TEST DATUM--------
-aa = Day_Data("29", "06", "2013", "Dates")
-
+    my_form = Day_Form(root, "16", "07", "2013", height =240, 
+                       bd = 2, relief = Tkinter.SUNKEN)
+    
+    my_form.load_day(today.strftime("%d"), today.strftime("%m"), today.strftime("%Y"))
+    my_form.grid(columnspan = 7, sticky = Tkinter.W + Tkinter.E + Tkinter.S)
+    
 #--------MAIN LOOP BEGIN--------
 root = Tkinter.Tk()
 root.title("Burnsidian Calendar Utility")
-
 make_cal(today.strftime("%m"), today.strftime("%Y"))
 root.mainloop()
