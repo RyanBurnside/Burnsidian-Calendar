@@ -55,12 +55,13 @@ def make_cal (month, year):
             row += 1;
             column = 0;
 
-    my_form = Day_Form(root, "16", "07", "2013", height =240, 
+    my_form = Day_Form(root, today.strftime("%d"), today.strftime("%m"), today.strftime("%Y"), height =240, 
                        bd = 2, relief = Tkinter.SUNKEN)
     
     my_form.load_day(today.strftime("%d"), today.strftime("%m"), today.strftime("%Y"))
     my_form.grid(columnspan = 7, sticky = Tkinter.W + Tkinter.E + Tkinter.S)
-    
+    my_form.save_day()
+
 #--------MAIN LOOP BEGIN--------
 root = Tkinter.Tk()
 root.title("Burnsidian Calendar Utility")
