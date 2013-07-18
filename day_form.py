@@ -25,10 +25,11 @@ class Day_Form(Tkinter.Frame):
         # TODO dump all containers before loading new day
         # Break out function to load items so the GUI buttons don't get
         # recreated with each call to load_day
-
         self.confirm.destroy()
         self.refresh.destroy()
         self.add.destroy()
+        self.item_frame.destroy() #kill old one with big size
+        self.item_frame = Tkinter.Frame(self) # Start fresh
         del self.check_vars[:]
 
         for i in self.widgets:
@@ -37,7 +38,7 @@ class Day_Form(Tkinter.Frame):
             i[1].destroy()
         del self.widgets[:]
 
-        # call delete on all widgets prior do dumping containers
+        # Call delete on all widgets prior to dumping containers
         try:
             self.str_day = str(str_day)
             if len(self.str_day) == 1:
@@ -54,6 +55,7 @@ class Day_Form(Tkinter.Frame):
             fname = self.str_year + self.str_month + self.str_day
 
             with open(fname, "r") as text_file:
+                
                 file_ver = float(text_file.readline().strip())
                 num_vals = int(text_file.readline().strip())
                 for i in range(num_vals):
@@ -78,31 +80,32 @@ class Day_Form(Tkinter.Frame):
                                           height = 2,
                                           selectbackground ="#ff5500")
                     temp_t.insert("1.0",chore.replace('\\n', '\n'))
-                    self.item_frame.grid(columnspan = 7)
+
                     self.widgets.append([temp_b, temp_t])
                     self.widgets[-1][0].pack(anchor = Tkinter.W)
                     self.widgets[-1][1].pack(side = Tkinter.TOP) 
-                                             
+        
 
         except Exception, e:
             pass
-
+        
+        self.item_frame.grid(row = 0, columnspan = 7)                                             
         self.confirm = Tkinter.Button(self, text = "Save",
                                       command = lambda:
                                           self.save_day())
-        self.confirm.grid(row = len(self.widgets), column = 0)
+        self.confirm.grid(row = len(self.widgets) + 1, column = 0)
 
         self.refresh = Tkinter.Button(self, text = "Revert",
                                       command = lambda:
                                           self.load_day(self.str_day, 
                                                         self.str_month,
                                                         self.str_year))
-        self.refresh.grid(row = len(self.widgets), column = 1)
+        self.refresh.grid(row = len(self.widgets) + 1, column = 1)
 
         self.add = Tkinter.Button(self, text = "Add Item",
                                   command = lambda:
                                       self.add_new_item())
-        self.add.grid(row = len(self.widgets), column = 2)
+        self.add.grid(row = len(self.widgets) + 1, column = 2)
 
     def save_day(self):
         # Save the contents of the GUI and quits
