@@ -11,29 +11,47 @@ FILE_VERSION = 1.0
 class Day_Form(Tkinter.Frame):
     def __init__(self, parent, str_day, str_month, str_year, **options):
         self.my_frame = Tkinter.Frame.__init__(self, parent, **options)
-        self.check_vars = [] # holds (BooleanVar()) 
+        self.item_frame = Tkinter.Frame(self)
+        self.check_vars = [] # holds (BooleanVar())
         self.widgets = [] # holds (Checkbutton, ScrolledText)
         self.str_day = str_day
         self.str_month = str_month
         self.str_year = str_year
+        self.confirm = Tkinter.Button(self, text = "Save")
+        self.refresh = Tkinter.Button(self, text = "Revert")             
+        self.add = Tkinter.Button(self, text = "Add Item")             
 
     def load_day(self, str_day, str_month, str_year):
         # TODO dump all containers before loading new day
+        # Break out function to load items so the GUI buttons don't get
+        # recreated with each call to load_day
+
+        self.confirm.destroy()
+        self.refresh.destroy()
+        self.add.destroy()
+        del self.check_vars[:]
+
+        for i in self.widgets:
+            i[0].destroy()
+            i[1].frame.destroy()
+            i[1].destroy()
+        del self.widgets[:]
+
         # call delete on all widgets prior do dumping containers
         try:
-            str_day = str(str_day)
-            if len(str_day) == 1:
-                str_day = '0' + str_day
+            self.str_day = str(str_day)
+            if len(self.str_day) == 1:
+                self.str_day = '0' + str_day
 
-            str_month = str(str_month)
-            if len(str_month) == 1:
-                str_month = '0' + str_month
+            self.str_month = str(str_month)
+            if len(self.str_month) == 1:
+                self.str_month = '0' + str_month
  
-            str_year = str(str_year)
-            if len(str_year) != 4:
+            self.str_year = str(str_year)
+            if len(self.str_year) != 4:
                 print "Bad year value!"
 
-            fname = str_year + str_month + str_day
+            fname = self.str_year + self.str_month + self.str_day
 
             with open(fname, "r") as text_file:
                 file_ver = float(text_file.readline().strip())
@@ -51,26 +69,40 @@ class Day_Form(Tkinter.Frame):
 
                     # Read value for ScrollText
                     chore = text_file.readline().strip()
-                    temp_b = Tkinter.Checkbutton(self, 
+                    temp_b = Tkinter.Checkbutton(self.item_frame,
                                          variable=self.check_vars[-1],
                                          text = "Done",
                                          onvalue = True, offvalue = False)
-                    temp_t = ScrolledText(self,
-                                          wrap=Tkinter.WORD, width = 40, 
-                                          height = 3,
+                    temp_t = ScrolledText(self.item_frame,
+                                          wrap=Tkinter.WORD,
+                                          height = 2,
                                           selectbackground ="#ff5500")
                     temp_t.insert("1.0",chore.replace('\\n', '\n'))
+                    self.item_frame.grid(columnspan = 7)
                     self.widgets.append([temp_b, temp_t])
-                    self.widgets[-1][0].grid(row = i, column = 0)
-                    self.widgets[-1][1].grid(row = i,column = 1)
-                self.confirm = Tkinter.Button(self, text = "Confirm", 
-                                              command = lambda:
-                                                  self.save_day())
-                self.confirm.grid(row = len(self.widgets), column = 1) 
+                    self.widgets[-1][0].pack(anchor = Tkinter.W)
+                    self.widgets[-1][1].pack(side = Tkinter.TOP) 
+                                             
 
         except Exception, e:
-            exception_name, exception_value = sys.exc_info()[:2]
-            print exception_value
+            pass
+
+        self.confirm = Tkinter.Button(self, text = "Save",
+                                      command = lambda:
+                                          self.save_day())
+        self.confirm.grid(row = len(self.widgets), column = 0)
+
+        self.refresh = Tkinter.Button(self, text = "Revert",
+                                      command = lambda:
+                                          self.load_day(self.str_day, 
+                                                        self.str_month,
+                                                        self.str_year))
+        self.refresh.grid(row = len(self.widgets), column = 1)
+
+        self.add = Tkinter.Button(self, text = "Add Item",
+                                  command = lambda:
+                                      self.add_new_item())
+        self.add.grid(row = len(self.widgets), column = 2)
 
     def save_day(self):
         # Save the contents of the GUI and quits
@@ -84,3 +116,27 @@ class Day_Form(Tkinter.Frame):
                 else:
                     text_file.write("False\n")
                 text_file.write(str(self.widgets[i][1].get('1.0', Tkinter.END)).strip().replace('\n',"\\n") + '\n')
+
+    def add_new_item(self):
+        bb = Tkinter.BooleanVar()
+        self.check_vars.append(bb)
+
+        self.check_vars[-1].set(0)
+        
+        # Read value for ScrollText
+        chore = ""
+        temp_b = Tkinter.Checkbutton(self.item_frame,
+                                     variable=self.check_vars[-1],
+                                     text = "Done",
+                                     onvalue = True, offvalue = False)
+        temp_t = ScrolledText(self.item_frame,
+                              wrap=Tkinter.WORD,
+                              height = 2,
+                              selectbackground ="#ff5500")
+        temp_t.insert("1.0","")
+        self.widgets.append([temp_b, temp_t])
+        self.widgets[-1][0].pack(anchor = Tkinter.W) 
+        self.widgets[-1][1].pack(side = Tkinter.TOP) 
+
+                           
+

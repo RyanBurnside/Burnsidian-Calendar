@@ -1,0 +1,6 @@
+TODO
+
+Gracefully handle absense of desired date file (should not crash as it does)
+Add an optional path to the saving of dates. Right now it saves in root.
+Add mechanism to delete widgets for text and checkboxes
+Add mechanism to change calendar date
