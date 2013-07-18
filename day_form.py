@@ -140,6 +140,3 @@ class Day_Form(Tkinter.Frame):
         self.widgets.append([temp_b, temp_t])
         self.widgets[-1][0].pack(anchor = Tkinter.W) 
         self.widgets[-1][1].pack(side = Tkinter.TOP) 
-
-                           
-

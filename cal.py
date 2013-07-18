@@ -3,6 +3,7 @@ import Tkinter
 import datetime
 from day_form import Day_Form
 
+
 # Global selection color
 select_color = "#ff5500"
 
